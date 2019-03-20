@@ -401,6 +401,35 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
         }
     }
     
+    // Custom Layout settings
+    /// Use this to add extra insets to the primary content.
+    public var primaryContentInsets: UIEdgeInsets = UIEdgeInsets.zero {
+        didSet {
+            if isViewLoaded {
+                primaryContentContainer.constrainToParent(insets: primaryContentInsets)
+                view.setNeedsLayout()
+            }
+        }
+    }
+    
+    /// Customize the placement and size of the drawer in .bottomDrawer mode. .left and .right are used, but .top and .bottom are ignored.
+    public var drawerSideInsets: UIEdgeInsets = UIEdgeInsets.zero {
+        didSet {
+            if isViewLoaded {
+                view.setNeedsLayout()
+            }
+        }
+    }
+    
+    /// When displayMode is .bottomDrawer, by default, it's width matches that of the device. Set this to customize. drawerInsets will be set first, then drawerMaxWidth is checked and applied, so that the net effect is - when there is a conflict between these two settings - the view origin will be pinned at drawerInsets.left.
+    public var drawerMaxWidth: CGFloat? = nil {
+        didSet {
+            if isViewLoaded {
+                view.setNeedsLayout()
+            }
+        }
+    }
+    
     /// This is here exclusively to support IBInspectable in Interface Builder because Interface Builder can't deal with enums. If you're doing this in code use the -initialDrawerPosition property instead. Available strings are: open, closed, partiallyRevealed, collapsed
     @IBInspectable public var initialDrawerPositionFromIB: String? {
         didSet {
@@ -585,7 +614,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
         self.view.addSubview(backgroundDimmingView)
         self.view.addSubview(drawerScrollView)
         
-        primaryContentContainer.constrainToParent()
+        primaryContentContainer.constrainToParent(insets: primaryContentInsets)
     }
     
     override open func viewDidLoad() {
@@ -699,17 +728,21 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
             }
 
             let lowestStop = [(self.view.bounds.size.height - topInset - safeAreaTopInset), collapsedHeight, partialRevealHeight].min() ?? 0
+            var drawerWidth = view.bounds.width - safeAreaLeftInset - safeAreaRightInset - drawerSideInsets.left - drawerSideInsets.right
+            if let maxWidth = drawerMaxWidth {
+                drawerWidth = min(maxWidth, drawerWidth)
+            }
             
             if supportedPositions.contains(.open)
             {
                 // Layout scrollview
-                drawerScrollView.frame = CGRect(x: safeAreaLeftInset, y: topInset + safeAreaTopInset, width: self.view.bounds.width - safeAreaLeftInset - safeAreaRightInset, height: self.view.bounds.height - topInset - safeAreaTopInset)
+                drawerScrollView.frame = CGRect(x: safeAreaLeftInset, y: topInset + safeAreaTopInset, width: drawerWidth, height: self.view.bounds.height - topInset - safeAreaTopInset)
             }
             else
             {
                 // Layout scrollview
                 let adjustedTopInset: CGFloat = supportedPositions.contains(.partiallyRevealed) ? partialRevealHeight : collapsedHeight
-                drawerScrollView.frame = CGRect(x: safeAreaLeftInset, y: self.view.bounds.height - adjustedTopInset, width: self.view.bounds.width - safeAreaLeftInset - safeAreaRightInset, height: adjustedTopInset)
+                drawerScrollView.frame = CGRect(x: safeAreaLeftInset, y: self.view.bounds.height - adjustedTopInset, width: drawerWidth, height: adjustedTopInset)
             }
             
             drawerScrollView.addSubview(drawerShadowView)
