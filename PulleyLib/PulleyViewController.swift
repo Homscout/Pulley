@@ -422,7 +422,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
     }
     
     /// When displayMode is .bottomDrawer, by default, it's width matches that of the device. Set this to customize. drawerInsets will be set first, then drawerMaxWidth is checked and applied, so that the net effect is - when there is a conflict between these two settings - the view origin will be pinned at drawerInsets.left.
-    public var drawerMaxWidth: CGFloat? = nil {
+    public var drawerMaxWidth: CGFloat? {
         didSet {
             if isViewLoaded {
                 view.setNeedsLayout()
