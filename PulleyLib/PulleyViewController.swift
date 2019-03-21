@@ -152,15 +152,15 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
     @IBOutlet public var drawerContentContainerView: UIView!
     
     // Internal
-    fileprivate let primaryContentContainer: UIView = UIView()
-    fileprivate let drawerContentContainer: UIView = UIView()
-    fileprivate let drawerShadowView: UIView = UIView()
-    fileprivate let drawerScrollView: PulleyPassthroughScrollView = PulleyPassthroughScrollView()
-    fileprivate let backgroundDimmingView: UIView = UIView()
+    public let primaryContentContainer: UIView = UIView()
+    public let drawerContentContainer: UIView = UIView()
+    public let drawerShadowView: UIView = UIView()
+    public let drawerScrollView: PulleyPassthroughScrollView = PulleyPassthroughScrollView()
+    public let backgroundDimmingView: UIView = UIView()
     
-    fileprivate var dimmingViewTapRecognizer: UITapGestureRecognizer?
+    public var dimmingViewTapRecognizer: UITapGestureRecognizer?
     
-    fileprivate var lastDragTargetContentOffset: CGPoint = CGPoint.zero
+    public var lastDragTargetContentOffset: CGPoint = CGPoint.zero
 
     // Public
     
