@@ -434,6 +434,14 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
         }
     }
     
+    public var shouldDimBackground: Bool = true {
+        didSet {
+            if isViewLoaded {
+                view.setNeedsLayout()
+            }
+        }
+    }
+    
     /// This is here exclusively to support IBInspectable in Interface Builder because Interface Builder can't deal with enums. If you're doing this in code use the -initialDrawerPosition property instead. Available strings are: open, closed, partiallyRevealed, collapsed
     @IBInspectable public var initialDrawerPositionFromIB: String? {
         didSet {
@@ -740,13 +748,13 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
             if supportedPositions.contains(.open)
             {
                 // Layout scrollview
-                drawerScrollView.frame = CGRect(x: safeAreaLeftInset, y: topInset + safeAreaTopInset, width: drawerWidth, height: self.view.bounds.height - topInset - safeAreaTopInset)
+                drawerScrollView.frame = CGRect(x: safeAreaLeftInset + drawerSideInsets.left, y: topInset + safeAreaTopInset, width: drawerWidth, height: self.view.bounds.height - topInset - safeAreaTopInset)
             }
             else
             {
                 // Layout scrollview
                 let adjustedTopInset: CGFloat = supportedPositions.contains(.partiallyRevealed) ? partialRevealHeight : collapsedHeight
-                drawerScrollView.frame = CGRect(x: safeAreaLeftInset, y: self.view.bounds.height - adjustedTopInset, width: drawerWidth, height: adjustedTopInset)
+                drawerScrollView.frame = CGRect(x: safeAreaLeftInset + drawerSideInsets.left, y: self.view.bounds.height - adjustedTopInset, width: drawerWidth, height: adjustedTopInset)
             }
             
             drawerScrollView.addSubview(drawerShadowView)
@@ -775,11 +783,11 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
             drawerContentContainer.layer.mask = cardMaskLayer
             drawerShadowView.layer.shadowPath = borderPath
             
-            backgroundDimmingView.frame = CGRect(x: 0.0, y: 0.0, width: self.view.bounds.width, height: self.view.bounds.height + drawerScrollView.contentSize.height)
+            backgroundDimmingView.frame = CGRect(x: drawerSideInsets.left, y: 0.0, width: drawerScrollView.frame.size.width, height: self.view.bounds.height + drawerScrollView.contentSize.height)
             
             drawerScrollView.transform = CGAffineTransform.identity
             
-            backgroundDimmingView.isHidden = false
+            backgroundDimmingView.isHidden = !shouldDimBackground
         }
         else
         {
