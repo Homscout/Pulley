@@ -406,11 +406,15 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
     public var primaryContentInsets: UIEdgeInsets = UIEdgeInsets.zero {
         didSet {
             if isViewLoaded {
-                primaryContentContainer.constrainToParent(insets: primaryContentInsets)
+                if primaryContentConstraints != nil {
+                    NSLayoutConstraint.deactivate(primaryContentConstraints!)
+                }
+                primaryContentConstraints = primaryContentContainer.constrainToParent(insets: primaryContentInsets)
                 view.setNeedsLayout()
             }
         }
     }
+    var primaryContentConstraints: [NSLayoutConstraint]?
     
     /// Customize the placement and size of the drawer in .bottomDrawer mode. .left and .right are used, but .top and .bottom are ignored.
     public var drawerSideInsets: UIEdgeInsets = UIEdgeInsets.zero {
@@ -614,7 +618,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
         self.view.addSubview(backgroundDimmingView)
         self.view.addSubview(drawerScrollView)
         
-        primaryContentContainer.constrainToParent(insets: primaryContentInsets)
+        primaryContentConstraints = primaryContentContainer.constrainToParent(insets: primaryContentInsets)
     }
     
     override open func viewDidLoad() {

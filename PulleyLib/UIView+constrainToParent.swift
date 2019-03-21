@@ -13,14 +13,15 @@ extension UIView {
         constrainToParent(insets: .zero)
     }
     
-    func constrainToParent(insets: UIEdgeInsets) {
-        guard let parent = superview else { return }
+    func constrainToParent(insets: UIEdgeInsets) -> [NSLayoutConstraint]? {
+        guard let parent = superview else { return nil}
         
         translatesAutoresizingMaskIntoConstraints = false
         let metrics: [String : Any] = ["left" : insets.left, "right" : insets.right, "top" : insets.top, "bottom" : insets.bottom]
-        
-        parent.addConstraints(["H:|-(left)-[view]-(right)-|", "V:|-(top)-[view]-(bottom)-|"].flatMap {
+        let constraints = ["H:|-(left)-[view]-(right)-|", "V:|-(top)-[view]-(bottom)-|"].flatMap {
             NSLayoutConstraint.constraints(withVisualFormat: $0, metrics: metrics, views: ["view": self])
-        })
+        }
+        parent.addConstraints(constraints)
+        return constraints
     }
 }
