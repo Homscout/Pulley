@@ -854,8 +854,18 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
                 self.drawerScrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.bottomLayoutGuide.length, right: 0)
                 self.drawerScrollView.scrollIndicatorInsets =  UIEdgeInsets(top: 0, left: 0, bottom: self.bottomLayoutGuide.length, right: 0) // (usefull if visible..)
             }
+            
+            // Layout container
+            var collapsedHeight:CGFloat = kPulleyDefaultCollapsedHeight
+            var partialRevealHeight:CGFloat = kPulleyDefaultPartialRevealHeight
+            
+            if let drawerVCCompliant = drawerContentViewController as? PulleyDrawerViewControllerDelegate
+            {
+                collapsedHeight = drawerVCCompliant.collapsedDrawerHeight?(bottomSafeArea: safeAreaBottomInset) ?? collapsedHeight
+                partialRevealHeight = drawerVCCompliant.partialRevealDrawerHeight?(bottomSafeArea: safeAreaBottomInset) ?? partialRevealHeight
+            }
 
-            let lowestStop = [(self.view.bounds.size.height - topInset - safeAreaTopInset), collapsedHeight, partialRevealHeight].min() ?? 0
+            let lowestStop = [(self.view.bounds.size.height - drawerTopInset - safeAreaTopInset), collapsedHeight, partialRevealHeight].min() ?? 0
             var drawerWidth = view.bounds.width - safeAreaLeftInset - safeAreaRightInset - drawerSideInsets.left - drawerSideInsets.right
             if let maxWidth = drawerMaxWidth {
                 drawerWidth = min(maxWidth, drawerWidth)
@@ -864,7 +874,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
             if supportedPositions.contains(.open)
             {
                 // Layout scrollview
-                drawerScrollView.frame = CGRect(x: safeAreaLeftInset + drawerSideInsets.left, y: topInset + safeAreaTopInset, width: drawerWidth, height: self.view.bounds.height - topInset - safeAreaTopInset)
+                drawerScrollView.frame = CGRect(x: safeAreaLeftInset + drawerSideInsets.left, y: drawerTopInset + safeAreaTopInset, width: drawerWidth, height: self.view.bounds.height - drawerTopInset - safeAreaTopInset)
             }
             else
             {
