@@ -501,7 +501,10 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
                     NSLayoutConstraint.deactivate(primaryContentConstraints!)
                 }
                 primaryContentConstraints = primaryContentContainer.constrainToParent(insets: primaryContentInsets)
-                view.setNeedsLayout()
+                                
+                if oldValue != primaryContentInsets {
+                    view.setNeedsLayout()
+                }
             }
         }
     }
