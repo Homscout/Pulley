@@ -475,7 +475,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
     /// The display mode for Pulley. Default is 'drawer', which preserves the previous behavior of Pulley. If you want it to adapt automatically, choose 'automatic'. The current display mode is available by using the 'currentDisplayMode' property.
     public var displayMode: PulleyDisplayMode = .drawer {
         didSet {
-            if self.isViewLoaded
+            if self.isViewLoaded, oldValue != displayMode
             {
                 self.view.setNeedsLayout()
             }
@@ -485,7 +485,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
     /// The Y positioning for Pulley. This property is only oberserved when `displayMode` is set to `.automatic` or `bottom`. Default value is `.topLeft`.
     public var panelCornerPlacement: PulleyPanelCornerPlacement = .topLeft {
         didSet {
-            if self.isViewLoaded
+            if self.isViewLoaded, oldValue != panelCornerPlacement
             {
                 self.view.setNeedsLayout()
             }
@@ -513,7 +513,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
     /// Customize the placement and size of the drawer in .bottomDrawer mode. .left and .right are used, but .top and .bottom are ignored.
     public var drawerSideInsets: UIEdgeInsets = UIEdgeInsets.zero {
         didSet {
-            if isViewLoaded {
+            if isViewLoaded, oldValue != drawerSideInsets {
                 view.setNeedsLayout()
             }
         }
@@ -522,7 +522,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
     /// When displayMode is .bottomDrawer, by default, it's width matches that of the device. Set this to customize. drawerInsets will be set first, then drawerMaxWidth is checked and applied, so that the net effect is - when there is a conflict between these two settings - the view origin will be pinned at drawerInsets.left.
     public var drawerMaxWidth: CGFloat? {
         didSet {
-            if isViewLoaded {
+            if isViewLoaded, oldValue != drawerMaxWidth {
                 view.setNeedsLayout()
             }
         }
